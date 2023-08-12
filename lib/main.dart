@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
             color: Color(0xFF2E3057),
           ),
         ),
-        // fontFamily: 'Lato',
+        fontFamily: 'CircularStd',
       ),
       home: const PokemonOverviewPage(),
       debugShowCheckedModeBanner: false,
