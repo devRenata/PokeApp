@@ -17,15 +17,6 @@ class MyApp extends StatelessWidget {
           primary: Colors.red,
           secondary: Colors.blue,
         ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          titleTextStyle: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF2E3057),
-          ),
-        ),
         fontFamily: 'CircularStd',
       ),
       home: const PokemonOverviewPage(),

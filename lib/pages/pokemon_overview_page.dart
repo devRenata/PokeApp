@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pokemonapp/components/pokeball_background.dart';
 import 'package:pokemonapp/models/pokemon.dart';
-import '/components/app_drawer.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -38,42 +38,31 @@ class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: const Color(0xFFF5FBFB),
-      appBar: AppBar(title: Text('Pokedex')),
-      body: Text('POKÉMONs'),
-      endDrawer: const AppDrawer(),
+    return PokeballBackground(
+      child: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.all(28),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.4,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (_, index) {
+                      
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      )
     );
   }
 }
-
-// FutureBuilder(
-//         initialData: const [],
-//         future: pageData(),
-//         builder: (context, snapshot) {},
-//       ),
-
-// Column(
-//         children: [
-//           Row(
-//             children: const [Text('POKÉMONs')],
-//           ),
-//           GridView.builder(
-//             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-//               maxCrossAxisExtent: 200,
-//               childAspectRatio: 1,
-//               crossAxisSpacing: 20,
-//               mainAxisSpacing: 20,
-//             ),
-//             itemCount: meuteste.length,
-//             itemBuilder: (context, index) {
-//               return Container(
-//                 height: 50,
-//                 width: 50,
-//                 color: Colors.blue,
-//               );
-//             },
-//           ),
-//         ],
-//       ),
