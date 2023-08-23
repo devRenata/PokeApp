@@ -48,11 +48,11 @@ class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
       child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(28),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 1.4,
+                  childAspectRatio: 0.8,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10),
               delegate: SliverChildBuilderDelegate(
