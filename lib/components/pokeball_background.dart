@@ -42,5 +42,3 @@ class PokeballBackground extends StatelessWidget {
     );
   }
 }
-
-//fDFDFD

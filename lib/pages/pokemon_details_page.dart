@@ -34,3 +34,4 @@ class PokemonDetailsPage extends StatelessWidget {
     );
   }
 }
+

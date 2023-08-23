@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokemonapp/components/pokeball_background.dart';
 import '/pages/pokemon_overview_page.dart';
 
 void main() {
@@ -14,12 +15,14 @@ class MyApp extends StatelessWidget {
       title: 'Poke App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: Colors.red,
+          primary: Colors.grey,
           secondary: Colors.blue,
         ),
         fontFamily: 'CircularStd',
       ),
-      home: const PokemonOverviewPage(),
+      home: const PokeballBackground(
+        child: PokemonOverviewPage(),
+      ),
       debugShowCheckedModeBanner: false,
     );
   }

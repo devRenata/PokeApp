@@ -1,6 +1,18 @@
+class RequestHeader {
+  int count;
+  String next;
+  String previous;
+
+  RequestHeader({
+    required this.count,
+    required this.next,
+    required this.previous,
+  });
+}
+
 class Pokemon {
   String name;
-  int url;
+  String url;
 
   Pokemon({
     required this.name,
