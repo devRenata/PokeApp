@@ -4,15 +4,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class PokemonDetailsPage extends StatelessWidget {
-  final Pokemon pokemon;
-  const PokemonDetailsPage({super.key, required this.pokemon});
+  final PokemonList pokemonList;
+  const PokemonDetailsPage({super.key, required this.pokemonList});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Pokémon detalhes')),
       body: FutureBuilder(
-        future: http.get(Uri.parse(pokemon.url.toString())),
+        future: http.get(Uri.parse(pokemonList.url.toString())),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -20,9 +20,14 @@ class PokemonDetailsPage extends StatelessWidget {
             return Text('Error: ${snapshot.error}');
           } else {
             final data = json.decode(snapshot.data!.body);
+
             return Column(
               children: [
-                Image.network(data['sprites']['front_default']),
+                Image.network(
+                  data['sprites']['other']['official-artwork']['front_default'],
+                      height: 300,
+                      width: 300,
+                ),
                 Text('name: ${data['name']}'),
                 Text('heigth: ${data['heigth']}'),
                 Text('weigth: ${data['weigth']}'),
@@ -34,4 +39,3 @@ class PokemonDetailsPage extends StatelessWidget {
     );
   }
 }
-

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class PokemonOverviewPage extends StatefulWidget {
-  const PokemonOverviewPage({super.key});
+  const PokemonOverviewPage({Key? key}) : super(key: key);
 
   @override
   State<PokemonOverviewPage> createState() => _PokemonOverviewPageState();
@@ -15,7 +15,7 @@ class PokemonOverviewPage extends StatefulWidget {
 class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
 
   final String baseUrl = "https://pokeapi.co/api/v2/pokemon/";
-  List<Pokemon> pokemonList = [];
+  List<PokemonList> pokemonList = [];
 
   @override
   void initState() {
@@ -32,15 +32,15 @@ class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
 
       final resultsList = data['results'] as List<dynamic>;
       resultsList.forEach((pokemon) {
-        pokemonList.add(Pokemon(
+        pokemonList.add(PokemonList(
           name: pokemon['name'],
           url: pokemon['url'],
         ));
       });
     } else {
-      print('Falha na requisição: ${response.statusCode}');
+      print('Falha na requisição da Lista de Pokémon: ${response.statusCode}');
     }
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +52,14 @@ class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: 1.4,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10),
               delegate: SliverChildBuilderDelegate(
                 childCount: pokemonList.length,
                 (BuildContext context, int index) {
                   final pokemon = pokemonList[index];
-                  return PokemonCard(pokemon: pokemon);
+                  return PokemonCard(pokemonList: pokemon);
                 },
               ),
             ),

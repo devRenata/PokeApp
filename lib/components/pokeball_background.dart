@@ -17,9 +17,9 @@ class PokeballBackground extends StatelessWidget {
     final iconSize = IconTheme.of(context).size ?? 0;
 
     final pokeballTopMargin =
-        -(pokeballSize / 2 - safeAreaTop - appBarHeight / 2);
+        -(pokeballSize / 2 - safeAreaTop - appBarHeight / 2) + 20;
     final pokeballRightMargin =
-        -(pokeballSize / 2 - iconButtonPadding - iconSize / 2);
+        -(pokeballSize / 2 - iconButtonPadding - iconSize / 2) + 20;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),

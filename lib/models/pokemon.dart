@@ -10,12 +10,30 @@ class RequestHeader {
   });
 }
 
-class Pokemon {
+class PokemonList {
   String name;
   String url;
 
-  Pokemon({
+  PokemonList({
     required this.name,
     required this.url,
+  });
+}
+
+class PokemonInfo {
+  int id;
+  int baseExperience;
+  int height;
+  bool isDefault;
+  int order;
+  int weigth;
+
+  PokemonInfo({
+    required this.id,
+    required this.baseExperience,
+    required this.height,
+    required this.isDefault,
+    required this.order,
+    required this.weigth,
   });
 }

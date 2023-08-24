@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../models/pokemon.dart';
 import '../pages/pokemon_details_page.dart';
 
 class PokemonCard extends StatelessWidget {
-  final Pokemon pokemon;
+  final PokemonList pokemonList;
 
-  const PokemonCard({Key? key, required this.pokemon}) : super(key: key);
+  const PokemonCard({Key? key, required this.pokemonList}) : super(key: key);
+
+  Future<void> fetchPokemonInfo() async {
+    final response = await http.get(Uri.parse(pokemonList.url.toString()));
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      print("POKEMON INFORMAÇÕES: $data");
+
+      final pokeInfo = data[]
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +26,7 @@ class PokemonCard extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constrains) {
         final itemHeight = constrains.maxHeight;
+        final itemWidth = constrains.maxWidth;
 
         return Container(
           decoration: BoxDecoration(
@@ -23,7 +36,7 @@ class PokemonCard extends StatelessWidget {
               BoxShadow(
                 color: Colors.amber.withOpacity(0.4),
                 blurRadius: 15,
-                offset: const Offset(0, 8),
+                //offset: const Offset(0, 8),
               ),
             ],
           ),
@@ -39,14 +52,16 @@ class PokemonCard extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PokemonDetailsPage(
-                        pokemon: pokemon,
+                        pokemonList: pokemonList,
                       ),
                     ),
                   );
                 },
+                // inserir LAYOUTBUILDER AQUI
                 child: Stack(
                   children: [
-                    _pokeballDecorationCard(height: itemHeight)
+                    _pokeballDecorationCard(height: itemHeight),
+                    _pokemonOrderCard(height: itemHeight),
                   ],
                 ),
               ),
@@ -58,13 +73,12 @@ class PokemonCard extends StatelessWidget {
   }
 }
 
-// Pokeball background card
 Widget _pokeballDecorationCard({required double height}) {
-  final pokeballSize = height * 0.75;
+  final pokeballSize = height * 0.70;
 
   return Positioned(
-    bottom: -height * 0.15,
-    right: -height * 0.15,
+    bottom: -height * 0.09,
+    right: -height * 0.02,
     child: Image.asset(
       'assets/images/pokeball.png',
       width: pokeballSize,
@@ -73,6 +87,23 @@ Widget _pokeballDecorationCard({required double height}) {
     ),
   );
 }
+
+Widget _pokemonOrderCard({required double height}) {
+  return Positioned(
+    top: 10,
+    right: 15,
+    child: Text(
+      '#008',
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.black12,
+      ),
+    ),
+  );
+}
+
+
 
 // return GestureDetector(
 //       onTap: () {
