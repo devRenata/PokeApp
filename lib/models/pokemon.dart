@@ -22,18 +22,28 @@ class PokemonList {
 
 class PokemonInfo {
   int id;
+  String name;
   int baseExperience;
   int height;
-  bool isDefault;
+  int weight;
   int order;
-  int weigth;
+  String image;
+  List<String> types;
+  List<String> abilities;
+  List<Map<String, dynamic>> stats;
+  Map<String, dynamic> species;
 
   PokemonInfo({
     required this.id,
+    required this.name,
     required this.baseExperience,
     required this.height,
-    required this.isDefault,
     required this.order,
-    required this.weigth,
+    required this.weight,
+    required this.image,
+    required this.types,
+    required this.abilities,
+    required this.stats,
+    required this.species,
   });
 }

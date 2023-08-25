@@ -6,12 +6,11 @@ class PokeballBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double _pokeballWidthFraction = 0.664;
     const double mainAppbarPadding = 28;
 
     // Calculando tamanhos e margens
     final safeAreaTop = MediaQuery.of(context).padding.top;
-    final pokeballSize = MediaQuery.of(context).size.width * _pokeballWidthFraction;
+    final pokeballSize = MediaQuery.of(context).size.width * 0.664;
     final appBarHeight = AppBar().preferredSize.height;
     const iconButtonPadding = mainAppbarPadding;
     final iconSize = IconTheme.of(context).size ?? 0;

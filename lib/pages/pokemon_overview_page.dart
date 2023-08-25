@@ -31,10 +31,10 @@ class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
       print("POKEMON RESULTS: $data");
 
       final resultsList = data['results'] as List<dynamic>;
-      resultsList.forEach((pokemon) {
+      resultsList.forEach((pokeList) {
         pokemonList.add(PokemonList(
-          name: pokemon['name'],
-          url: pokemon['url'],
+          name: pokeList['name'],
+          url: pokeList['url'],
         ));
       });
     } else {
@@ -58,8 +58,8 @@ class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
               delegate: SliverChildBuilderDelegate(
                 childCount: pokemonList.length,
                 (BuildContext context, int index) {
-                  final pokemon = pokemonList[index];
-                  return PokemonCard(pokemonList: pokemon);
+                  final pokemonL = pokemonList[index];
+                  return PokemonCard(pokemonList: pokemonL, pokemonInfo: pokemonI,);
                 },
               ),
             ),

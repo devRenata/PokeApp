@@ -7,26 +7,58 @@ import '../pages/pokemon_details_page.dart';
 
 class PokemonCard extends StatelessWidget {
   final PokemonList pokemonList;
+  final PokemonInfo pokemonInfo;
 
-  const PokemonCard({Key? key, required this.pokemonList}) : super(key: key);
+  PokemonCard({Key? key, required this.pokemonList, required this.pokemonInfo}) : super(key: key);
 
   Future<void> fetchPokemonInfo() async {
     final response = await http.get(Uri.parse(pokemonList.url.toString()));
     if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      print("POKEMON INFORMAÇÕES: $data");
+      final data = json.decode(response.body);
+      // print("POKEMON INFORMAÇÕES: $data");
 
-      final pokeInfo = data[]
+      final abilities = (data['abilities'] as List<dynamic>)
+          .map((ability) => ability['ability']['name'] as String)
+          .toList();
+
+      final types = (data['types'] as List<dynamic>)
+          .map((type) => type['type']['name'] as String)
+          .toList();
+
+      final stats = (data['stats'] as List<dynamic>)
+          .map((stat) => {
+                'name': stat['stat']['name'],
+                'base_stat': stat['base_stat'],
+              })
+          .toList();   
+
+      pokemonInfo = PokemonInfo(
+        id: data['id'],
+        name: data['name'],
+        baseExperience: data['base_experience'],
+        height: data['height'],
+        order: data['order'],
+        weight: data['weight'],
+        image: data['sprites']['other']['official-artwork']['front_default'],
+        species: data['species'] as Map<String, dynamic>,
+        types: types,
+        abilities: abilities,
+        stats: stats,
+      );
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+    if (pokemonInfo == null) {
+      return CircularProgressIndicator();
+    }
+
     // Layout responsivo
     return LayoutBuilder(
       builder: (context, constrains) {
         final itemHeight = constrains.maxHeight;
-        final itemWidth = constrains.maxWidth;
 
         return Container(
           decoration: BoxDecoration(
@@ -57,11 +89,10 @@ class PokemonCard extends StatelessWidget {
                     ),
                   );
                 },
-                // inserir LAYOUTBUILDER AQUI
                 child: Stack(
                   children: [
                     _pokeballDecorationCard(height: itemHeight),
-                    _pokemonOrderCard(height: itemHeight),
+                    _pokemonOrderCard(order: pokemonInfo.order),
                   ],
                 ),
               ),
@@ -88,13 +119,15 @@ Widget _pokeballDecorationCard({required double height}) {
   );
 }
 
-Widget _pokemonOrderCard({required double height}) {
+Widget _pokemonOrderCard({required int order}) {
+  final formattedOrder = '#${order.toString().padLeft(3, '0')}';
+
   return Positioned(
     top: 10,
     right: 15,
     child: Text(
-      '#008',
-      style: TextStyle(
+      formattedOrder,
+      style: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
         color: Colors.black12,
@@ -102,23 +135,3 @@ Widget _pokemonOrderCard({required double height}) {
     ),
   );
 }
-
-
-
-// return GestureDetector(
-//       onTap: () {
-//         Navigator.push(
-//           context,
-//           MaterialPageRoute(
-//             builder: (context) => PokemonDetailsPage(
-//               pokemon: pokemon,
-//             ),
-//           ),
-//         );
-//       },
-//       child: Container(
-//         color: Colors.blueGrey,
-//         alignment: Alignment.center,
-//         child: Text(pokemon.name),
-//       ),
-//     );
