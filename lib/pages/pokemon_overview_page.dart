@@ -13,22 +13,27 @@ class PokemonOverviewPage extends StatefulWidget {
 }
 
 class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
-
   final String baseUrl = "https://pokeapi.co/api/v2/pokemon/";
   List<PokemonList> pokemonList = [];
+  List<PokemonInfo> pokemonInfoList = [];
 
   @override
   void initState() {
     super.initState();
-    fetchPokemonList();
+    _fetchPokemonData();
   }
 
-  // buscando a lista de Pokémon da API
-  Future<void> fetchPokemonList() async {
+  Future<void> _fetchPokemonData() async {
+    await _fetchPokemonList();
+    await _fetchPokemonInfo();
+  }
+
+  // buscando a lista de todos os Pokémon da API
+  Future<void> _fetchPokemonList() async {
     final response = await http.get(Uri.parse(baseUrl));
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      print("POKEMON RESULTS: $data");
+      // print("POKEMON RESULTS: $data");
 
       final resultsList = data['results'] as List<dynamic>;
       resultsList.forEach((pokeList) {
@@ -39,6 +44,46 @@ class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
       });
     } else {
       print('Falha na requisição da Lista de Pokémon: ${response.statusCode}');
+    }
+  }
+
+  // buscando as informações de cada Pokémon
+  Future<void> _fetchPokemonInfo() async {
+    for (final pokemonListItem in pokemonList) {
+      final response = await http.get(Uri.parse(pokemonListItem.url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print("POKEMON INFORMAÇÕES: $data");
+
+        final abilities = (data['abilities'] as List<dynamic>)
+            .map((ability) => ability['ability']['name'] as String)
+            .toList();
+
+        final types = (data['types'] as List<dynamic>)
+            .map((type) => type['type']['name'] as String)
+            .toList();
+
+        final stats = (data['stats'] as List<dynamic>)
+            .map((stat) => {
+                  'name': stat['stat']['name'],
+                  'base_stat': stat['base_stat'],
+                })
+            .toList();
+
+        pokemonInfoList.add(PokemonInfo(
+          id: data['id'],
+          name: data['name'],
+          baseExperience: data['base_experience'],
+          height: data['height'],
+          order: data['order'],
+          weight: data['weight'],
+          image: data['sprites']['other']['official-artwork']['front_default'],
+          species: data['species'] as Map<String, dynamic>,
+          types: types,
+          abilities: abilities,
+          stats: stats,
+        ));
+      }
     }
   }
 
@@ -59,7 +104,8 @@ class _PokemonOverviewPageState extends State<PokemonOverviewPage> {
                 childCount: pokemonList.length,
                 (BuildContext context, int index) {
                   final pokemonL = pokemonList[index];
-                  return PokemonCard(pokemonList: pokemonL, pokemonInfo: pokemonI,);
+                  final pokemonI = pokemonInfoList[index];
+                  return PokemonCard(pokemonList: pokemonL, pokemonInfo: pokemonI);
                 },
               ),
             ),
