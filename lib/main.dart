@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokemonapp/components/pokeball_background.dart';
-import '/pages/pokemon_overview_page.dart';
+import 'pages/pokemon_grid_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'CircularStd',
       ),
       home: const PokeballBackground(
-        child: PokemonOverviewPage(),
+        child: PokemonGridPage(),
       ),
       debugShowCheckedModeBanner: false,
     );

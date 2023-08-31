@@ -1,45 +1,33 @@
 import 'package:flutter/material.dart';
 import '../models/pokemon.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class PokemonDetailsPage extends StatelessWidget {
-  final PokemonList pokemonList;
-  const PokemonDetailsPage({super.key, required this.pokemonList});
+  final PokemonInfo pokemonInfo;
+  const PokemonDetailsPage({
+    Key? key,
+    required this.pokemonInfo,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Pokémon detalhes')),
-      body: FutureBuilder(
-        future: http.get(Uri.parse(pokemonList.url.toString())),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.red,
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            final data = json.decode(snapshot.data!.body);
+      body: _buildPokemonDetails(pokemonInfo),
+    );
+  }
 
-            return Column(
-              children: [
-                Image.network(
-                  data['sprites']['other']['official-artwork']['front_default'],
-                      height: 300,
-                      width: 300,
-                ),
-                Text('name: ${data['name']}'),
-                Text('heigth: ${data['heigth']}'),
-                Text('weigth: ${data['weigth']}'),
-              ],
-            );
-          }
-        },
-      ),
+  Widget _buildPokemonDetails(PokemonInfo data) {
+    return Column(
+      children: [
+        Image.network(
+          data.image,
+          height: 300,
+          width: 300,
+        ),
+        Text('name: ${data.name}'),
+        Text('heigth: ${data.height}'),
+        Text('weigth: ${data.weight}'),
+      ],
     );
   }
 }
