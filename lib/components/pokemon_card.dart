@@ -14,7 +14,6 @@ class PokemonCard extends StatefulWidget {
 }
 
 class _PokemonCardState extends State<PokemonCard> {
-
   @override
   void initState() {
     super.initState();
@@ -65,7 +64,6 @@ class _PokemonCardState extends State<PokemonCard> {
     return FutureBuilder<PokemonInfo>(
       future: _fetchPokemonInfo(),
       builder: (context, snapshot) {
-
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
             color: Colors.white.withOpacity(.1),
@@ -113,7 +111,9 @@ class _PokemonCardState extends State<PokemonCard> {
                         children: [
                           _buildPokeballDecoration(height: itemHeight),
                           _buildPokemonOrder(order: pokemonInfo.id),
-                          _buildPokemonImage(height: itemHeight, pokeInfo: pokemonInfo),
+                          _buildPokemonImage(
+                              height: itemHeight, pokeInfo: pokemonInfo),
+                          _CardContent(pokemonInfo),
                         ],
                       ),
                     ),
@@ -130,7 +130,7 @@ class _PokemonCardState extends State<PokemonCard> {
 }
 
 Widget _buildPokeballDecoration({required double height}) {
-  final pokeballSize = height * 0.70;
+  final pokeballSize = height * 0.8;
   return Positioned(
     bottom: -height * 0.09,
     right: -height * 0.02,
@@ -146,12 +146,12 @@ Widget _buildPokeballDecoration({required double height}) {
 Widget _buildPokemonOrder({required int order}) {
   final formattedOrder = '#${order.toString().padLeft(3, '0')}';
   return Positioned(
-    top: 10,
-    right: 15,
+    top: 12,
+    right: 12,
     child: Text(
       formattedOrder,
       style: const TextStyle(
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: FontWeight.bold,
         color: Colors.black12,
       ),
@@ -160,13 +160,12 @@ Widget _buildPokemonOrder({required int order}) {
 }
 
 Widget _buildPokemonImage({required double height, required pokeInfo}) {
-  final pokemonSize = height * 0.76;
-
+  final pokemonSize = height * 0.75;
   return Positioned(
-    bottom: -2,
-    right: 2,
+    bottom: -1,
+    right: 1.5,
     child: Hero(
-      tag: pokeInfo.image,
+      tag: '${pokeInfo.name} image',
       child: AnimatedPadding(
         duration: const Duration(milliseconds: 600),
         curve: Curves.easeOutQuint,
@@ -177,17 +176,112 @@ Widget _buildPokemonImage({required double height, required pokeInfo}) {
           maxWidthDiskCache: 700,
           maxHeightDiskCache: 700,
           fadeInDuration: const Duration(milliseconds: 120),
-          fadeOutDuration:  const Duration(milliseconds: 120),
+          fadeOutDuration: const Duration(milliseconds: 120),
           imageBuilder: (context, image) => Image(
             image: image,
-            width: 100,
-            height: 100,
+            width: pokemonSize,
+            height: pokemonSize,
             alignment: Alignment.bottomCenter,
-            color: Colors.blue,
+            fit: BoxFit.contain,
+          ),
+          placeholder: (_, __) => Image(
+            image: pokeInfo.image,
+            width: pokemonSize,
+            height: pokemonSize,
+            alignment: Alignment.bottomCenter,
+            color: Colors.black12,
             fit: BoxFit.contain,
           ),
         ),
       ),
     ),
-  );  
+  );
+}
+
+class _CardContent extends StatelessWidget {
+  final PokemonInfo pokemonInfo;
+  String capitalize(String input) {
+    if (input.isEmpty) {
+      return input;
+    }
+    return input[0].toUpperCase() + input.substring(1);
+  }
+
+  const _CardContent(this.pokemonInfo, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Hero(
+              tag: '${pokemonInfo.name} name',
+              child: Text(
+                capitalize(pokemonInfo.name),
+                style: const TextStyle(
+                    fontSize: 16,
+                    height: .7,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ..._buildTypes(context, pokemonInfo.types),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildTypes(BuildContext context, types) {
+    return pokemonInfo.types
+        .take(2)
+        .map(
+          (type) => Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: ShapeDecoration(
+                  shape: const StadiumBorder(),
+                  color: const Color(0xFFF5F5F6).withOpacity(.2),
+                ),
+                child: Wrap(
+                  children: [
+                    Text(
+                      type,
+                      textScaleFactor: 1,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        height: .8,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const Text(
+                      '',
+                      textScaleFactor: 1,
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: .8,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],  
+                ),
+              ),
+            ),
+          ),
+        )
+        .toList();
+  }
 }
