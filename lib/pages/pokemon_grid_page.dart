@@ -15,6 +15,8 @@ class PokemonGridPage extends StatefulWidget {
 class _PokemonGridPageState extends State<PokemonGridPage> {
   final String baseUrl = "https://pokeapi.co/api/v2/pokemon/";
   List<PokemonList> pokemonList = [];
+  int offset = 0;
+  int limit = 20;
 
   @override
   void initState() {
@@ -24,10 +26,9 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
 
   // buscando a lista de todos os Pokémon da API
   Future<void> _fetchPokemonList() async {
-    final response = await http.get(Uri.parse(baseUrl));
+    final response = await http.get(Uri.parse('$baseUrl?offset=$offset&limit=$limit'));
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      print("POKEMON RESULTS: $data");
 
       final resultsList = data['results'] as List<dynamic>;
       resultsList.forEach((pokeList) {
@@ -35,6 +36,10 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
           name: pokeList['name'],
           url: pokeList['url'],
         ));
+      });
+
+      setState(() {
+        offset += limit;
       });
     } else {
       print('Falha na requisição da Lista de Pokémon: ${response.statusCode}');

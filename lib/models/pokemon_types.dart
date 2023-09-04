@@ -38,10 +38,10 @@ extension PokemonTypesX on PokemonTypes {
   Color get color {
     switch (this) {
       case PokemonTypes.grass:
-        return const Color(0xFF78C850);
+        return const Color(0xFF48D0B0);
 
       case PokemonTypes.bug:
-        return const Color(0xFF48D0B0);
+        return const Color(0xFF78C850);
 
       case PokemonTypes.fire:
         return const Color(0xFFFB6C6C);
@@ -95,6 +95,5 @@ extension PokemonTypesX on PokemonTypes {
         return const Color(0xFF7AC7FF);
     }
   }
-  
 }
 

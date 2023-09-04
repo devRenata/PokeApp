@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../models/pokemon.dart';
+import '../models/pokemon_types.dart';
 import '../pages/pokemon_details_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -74,17 +75,18 @@ class _PokemonCardState extends State<PokemonCard> {
           return const Text('Erro ao buscar informações do Pokémon');
         } else if (snapshot.hasData) {
           final pokemonInfo = snapshot.data!;
+          final backgroundColor = PokemonTypesX.parse(pokemonInfo.types[0]).color;
 
           return LayoutBuilder(
             builder: (context, constrains) {
               final itemHeight = constrains.maxHeight;
               return Container(
                 decoration: BoxDecoration(
-                  color: Colors.amber,
+                  color: backgroundColor,
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.amber.withOpacity(0.4),
+                      color: backgroundColor.withOpacity(0.4),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
@@ -93,7 +95,7 @@ class _PokemonCardState extends State<PokemonCard> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Material(
-                    color: Colors.amber,
+                    color: backgroundColor,
                     child: InkWell(
                       splashColor: Colors.white10,
                       highlightColor: Colors.white10,
@@ -130,7 +132,7 @@ class _PokemonCardState extends State<PokemonCard> {
 }
 
 Widget _buildPokeballDecoration({required double height}) {
-  final pokeballSize = height * 0.8;
+  final pokeballSize = height * 0.75;
   return Positioned(
     bottom: -height * 0.09,
     right: -height * 0.02,
@@ -147,7 +149,7 @@ Widget _buildPokemonOrder({required int order}) {
   final formattedOrder = '#${order.toString().padLeft(3, '0')}';
   return Positioned(
     top: 12,
-    right: 12,
+    right: 10,
     child: Text(
       formattedOrder,
       style: const TextStyle(
