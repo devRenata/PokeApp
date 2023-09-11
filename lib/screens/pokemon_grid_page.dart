@@ -14,7 +14,9 @@ class PokemonGridPage extends StatefulWidget {
 
 class _PokemonGridPageState extends State<PokemonGridPage> {
   final String baseUrl = "https://pokeapi.co/api/v2/pokemon/";
+  ScrollController _scrollController = ScrollController();
   List<PokemonList> pokemonList = [];
+  bool _isLoading = false;
   int offset = 0;
   int limit = 20;
 
@@ -22,11 +24,27 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
   void initState() {
     super.initState();
     _fetchPokemonList();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _fetchPokemonList();
+      }
+    });
   }
 
   // buscando a lista de todos os Pokémon da API
   Future<void> _fetchPokemonList() async {
-    final response = await http.get(Uri.parse('$baseUrl?offset=$offset&limit=$limit'));
+    if (_isLoading) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final response =
+        await http.get(Uri.parse('$baseUrl?offset=$offset&limit=$limit'));
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
 
@@ -40,21 +58,28 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
 
       setState(() {
         offset += limit;
+        _isLoading = false;
       });
     } else {
       print('Falha na requisição da Lista de Pokémon: ${response.statusCode}');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return PokeballBackground(
-      child: CustomScrollView(slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.all(28),
-          sliver: _buildPokemonGrid(),
-        ),
-      ]),
+      child: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(28),
+            sliver: _buildPokemonGrid(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -68,8 +93,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
       delegate: SliverChildBuilderDelegate(
         childCount: pokemonList.length,
         (BuildContext context, index) {
-          return PokemonCard(
-              pokemonList: pokemonList[index]);
+          return PokemonCard(pokemonList: pokemonList[index]);
         },
       ),
     );

@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../models/pokemon.dart';
 import '../models/pokemon_types.dart';
-import '../pages/pokemon_details_page.dart';
+import '../screens/pokemon_details_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
