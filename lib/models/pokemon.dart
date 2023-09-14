@@ -1,49 +1,128 @@
-class RequestHeader {
-  int count;
-  String next;
-  String previous;
+import 'package:flutter/material.dart';
 
-  RequestHeader({
-    required this.count,
-    required this.next,
-    required this.previous,
-  });
-}
-
-class PokemonList {
+class Pokemon {
+  int number;
   String name;
-  String url;
-
-  PokemonList({
-    required this.name,
-    required this.url,
-  });
-}
-
-class PokemonInfo {
-  int id;
-  String name;
-  int baseExperience;
-  int height;
-  int weight;
-  int order;
-  String image;
+  String species;
   List<String> types;
-  List<String> abilities;
-  List<Map<String, dynamic>> stats;
-  Map<String, dynamic> species;
+  List<Map<String, String>> abilities;
+  List<String> eggGroups;
+  List<double> gender;
+  String height;
+  String weight;
+  String image;
+  String description;
 
-  PokemonInfo({
-    required this.id,
+  Pokemon({
+    required this.number,
     required this.name,
-    required this.baseExperience,
-    required this.height,
-    required this.order,
-    required this.weight,
-    required this.image,
+    required this.species,
     required this.types,
     required this.abilities,
-    required this.stats,
-    required this.species,
+    required this.eggGroups,
+    required this.gender,
+    required this.height,
+    required this.weight,
+    required this.image,
+    required this.description,
   });
 }
+
+enum PokemonTypes {
+  grass,
+  poison,
+  fire,
+  flying,
+  water,
+  bug,
+  normal,
+  electric,
+  ground,
+  fairy,
+  fighting,
+  psychic,
+  rock,
+  steel,
+  ice,
+  ghost,
+  dragon,
+  dark,
+  monster,
+  unknown,
+}
+
+extension PokemonTypesX on PokemonTypes {
+  String getEnumValue(e) => e.toString().split('.').last;
+  String get value => getEnumValue(this);
+
+  static PokemonTypes parse(String rawValue) {
+    final type = PokemonTypes.values.firstWhere(
+      (element) => element.value.trim().toLowerCase() == rawValue.toLowerCase(),
+      orElse: () => PokemonTypes.unknown,
+    );
+    return type;
+  }
+
+  Color get color {
+    switch (this) {
+      case PokemonTypes.grass:
+        return const Color(0xFF48D0B0);
+
+      case PokemonTypes.bug:
+        return const Color(0xFF78C850);
+
+      case PokemonTypes.fire:
+        return const Color(0xFFFB6C6C);
+
+      case PokemonTypes.water:
+        return const Color(0xFF7AC7FF);
+
+      case PokemonTypes.fighting:
+        return const Color(0xFFFA6555);
+
+      case PokemonTypes.normal:
+        return const Color(0xFFA8A878);
+
+      case PokemonTypes.electric:
+        return const Color(0xFFFFCE4B);
+
+      case PokemonTypes.psychic:
+        return const Color(0xFFEE99AC);
+
+      case PokemonTypes.poison:
+        return const Color(0xFF9F5BBA);
+
+      case PokemonTypes.ghost:
+        return const Color(0xFF7C538C);
+
+      case PokemonTypes.ground:
+        return const Color(0xD0795548);
+
+      case PokemonTypes.rock:
+        return const Color(0xFFCA8179);
+
+      case PokemonTypes.dark:
+        return const Color(0xFF303943);
+
+      case PokemonTypes.dragon:
+        return const Color(0xD07038F8);
+
+      case PokemonTypes.fairy:
+        return const Color(0xFFF85888);
+
+      case PokemonTypes.flying:
+        return const Color(0xFFA890F0);
+
+      case PokemonTypes.ice:
+        return const Color(0xFF98D8D8);
+
+      case PokemonTypes.steel:
+        return const Color(0x64303943);
+        
+      default:
+        return const Color(0xFF7AC7FF);
+    }
+  }
+}
+
+

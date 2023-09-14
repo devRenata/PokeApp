@@ -13,12 +13,9 @@ class PokemonGridPage extends StatefulWidget {
 }
 
 class _PokemonGridPageState extends State<PokemonGridPage> {
-  final String baseUrl = "https://pokeapi.co/api/v2/pokemon/";
+  final String baseUrl = "https://pokeapi.glitch.me/v1/pokemon/";
   ScrollController _scrollController = ScrollController();
-  List<PokemonList> pokemonList = [];
-  bool _isLoading = false;
-  int offset = 0;
-  int limit = 20;
+  List<Pokemon> pokemonList = [];
 
   @override
   void initState() {
@@ -33,38 +30,45 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
     });
   }
 
-  // buscando a lista de todos os Pokémon da API
   Future<void> _fetchPokemonList() async {
-    if (_isLoading) {
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    final response =
-        await http.get(Uri.parse('$baseUrl?offset=$offset&limit=$limit'));
+    final response = await http.get(Uri.parse(baseUrl));
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
 
       final resultsList = data['results'] as List<dynamic>;
-      resultsList.forEach((pokeList) {
-        pokemonList.add(PokemonList(
-          name: pokeList['name'],
-          url: pokeList['url'],
-        ));
-      });
+      resultsList.forEach((pokeList) async {
+        final url = pokeList['url'];
+        final response = await http.get(Uri.parse(url));
+        if (response.statusCode == 200) {
+          var pokemonData = json.decode(response.body);
 
-      setState(() {
-        offset += limit;
-        _isLoading = false;
+          final abilities =
+              (pokemonData['abilities'] as List<dynamic>).map((ability) {
+            final abilityMap = ability['ability'] as Map<String, dynamic>;
+            return {
+              'name': abilityMap['name'] as String,
+            };
+          }).toList();
+
+          setState(() {
+            pokemonList.add(Pokemon(
+              number: pokemonData['number'],
+              name: pokemonData['name'],
+              species: pokemonData['species'],
+              types: List<String>.from(pokemonData['types']),
+              abilities: abilities,
+              eggGroups: List<String>.from(pokemonData['eggGroups']),
+              gender: List<double>.from(pokemonData['gender']),
+              height: pokemonData['height'],
+              weight: pokemonData['weight'],
+              image: pokemonData['sprite'],
+              description: pokemonData['description'],
+            ));
+          });
+        }
       });
     } else {
-      print('Falha na requisição da Lista de Pokémon: ${response.statusCode}');
-      setState(() {
-        _isLoading = false;
-      });
+      print('Falha na requisição de Pokémon: ${response.statusCode}');
     }
   }
 
@@ -93,7 +97,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
       delegate: SliverChildBuilderDelegate(
         childCount: pokemonList.length,
         (BuildContext context, index) {
-          return PokemonCard(pokemonList: pokemonList[index]);
+          return PokemonCard(pokemon: pokemonList[index]);
         },
       ),
     );
