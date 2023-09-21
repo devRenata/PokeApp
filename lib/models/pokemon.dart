@@ -23,7 +23,6 @@ class PokemonList {
 class PokemonInfo {
   int id;
   String name;
-  int baseExperience;
   int height;
   int weight;
   int order;
@@ -36,7 +35,6 @@ class PokemonInfo {
   PokemonInfo({
     required this.id,
     required this.name,
-    required this.baseExperience,
     required this.height,
     required this.order,
     required this.weight,

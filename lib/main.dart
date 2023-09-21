@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pokemonapp/components/pokeball_background.dart';
-import 'screens/pokemon_grid_page.dart';
+import 'package:pokemonapp/pages/home_page/widgets/home_background.dart';
+import 'pages/home_page/pokemon_grid_page.dart';
 
 void main() {
   runApp(const MyApp());

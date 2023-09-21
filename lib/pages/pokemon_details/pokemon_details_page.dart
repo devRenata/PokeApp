@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/pokemon.dart';
+import '../../models/pokemon.dart';
 
 class PokemonDetailsPage extends StatelessWidget {
   final PokemonInfo pokemonInfo;
