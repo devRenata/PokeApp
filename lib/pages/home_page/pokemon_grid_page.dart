@@ -16,6 +16,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
   final String baseUrl = "https://pokeapi.co/api/v2/pokemon/";
   ScrollController _scrollController = ScrollController();
   List<PokemonList> pokemonList = [];
+  List<PokemonInfo> pokemonData = [];
   bool _isLoading = false;
   int offset = 0;
   int limit = 20;
@@ -90,6 +91,8 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
               abilities: abilities,
               stats: stats,
             );
+
+            pokemonData.add(pokemonInfo);
           } else {
             throw Exception('Falha ao buscar informações do Pokémon');
           }
@@ -133,7 +136,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
       delegate: SliverChildBuilderDelegate(
         childCount: pokemonList.length,
         (BuildContext context, index) {
-          return PokemonCard(hbhbhj);
+          return PokemonCard(pokemonInfo: pokemonData[index]);
         },
       ),
     );

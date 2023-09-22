@@ -19,10 +19,13 @@ class PokemonDetailsPage extends StatelessWidget {
   Widget _buildPokemonDetails(PokemonInfo data) {
     return Column(
       children: [
-        Image.network(
-          data.image,
-          height: 300,
-          width: 300,
+        Hero(
+          tag: '${pokemonInfo.name} image',
+          child: Image.network(
+            data.image,
+            height: 300,
+            width: 300,
+          ),
         ),
         Text('name: ${data.name}'),
         Text('heigth: ${data.height}'),

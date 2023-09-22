@@ -8,15 +8,15 @@ import 'build_card_order.dart';
 import 'build_card_pokeball.dart';
 
 class PokemonCard extends StatelessWidget {
+  final PokemonInfo pokemonInfo;
+
+  const PokemonCard({
+    Key? key,
+    required this.pokemonInfo,
+  }) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<PokemonInfo>(
-      // tirar o futurebuilder
-      // deixar só o layout builder
-      future: _fetchPokemonList(),
-      builder: (context, snapshot) {
-        final pokemonInfo = snapshot.data!;
         final backgroundColor = PokemonTypesX.parse(pokemonInfo.types[0]).color;
 
         return LayoutBuilder(
@@ -66,8 +66,8 @@ class PokemonCard extends StatelessWidget {
             );
           },
         );
-      },
-    );
+    
+  
   }
 }
 
