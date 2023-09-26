@@ -26,7 +26,7 @@ class PokemonInfo {
   int height;
   int weight;
   int order;
-  String image;
+  String? image;
   List<String> types;
   List<String> abilities;
   List<Map<String, dynamic>> stats;
@@ -38,7 +38,7 @@ class PokemonInfo {
     required this.height,
     required this.order,
     required this.weight,
-    required this.image,
+    this.image,
     required this.types,
     required this.abilities,
     required this.stats,

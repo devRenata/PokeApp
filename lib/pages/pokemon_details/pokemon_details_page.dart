@@ -22,7 +22,7 @@ class PokemonDetailsPage extends StatelessWidget {
         Hero(
           tag: '${pokemonInfo.name} image',
           child: Image.network(
-            data.image,
+            data.image!,
             height: 300,
             width: 300,
           ),
