@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../models/pokemon.dart';
 import '../../../models/pokemon_types.dart';
 import '../../pokemon_details/pokemon_details_page.dart';
-import '../pokemon_grid_page.dart';
 import 'build_card_image.dart';
 import 'build_card_order.dart';
 import 'build_card_pokeball.dart';

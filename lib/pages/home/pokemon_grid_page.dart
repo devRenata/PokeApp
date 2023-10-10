@@ -1,6 +1,6 @@
-
 import 'dart:async';
-
+import 'dart:ui';
+//import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:pokemonapp/pages/home/widgets/home_background.dart';
 import 'package:pokemonapp/pages/home/widgets/pokemon_card.dart';
@@ -21,11 +21,13 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
   List<PokemonList> pokemonList = [];
   List<PokemonInfo> pokemonData = [];
   bool _isLoading = false;
-  int offset = 0;
-  int limit = 20;
+  int offset = 0; // número da página
+  int limit = 20; // número de pokemons por página, padrão de 20
 
-  // // // if dentro do future builder
-  // // // conectstate.done
+  // if dentro do future builder
+  // conectstate.done
+  // adicionar medidas em altura e peso -> dividir por 10
+  // unidades em: altura metro e peso em kg
 
   @override
   void initState() {
@@ -66,8 +68,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
           height: data['height'],
           order: data['order'],
           weight: data['weight'],
-          image: data['sprites']['other']['official-artwork']
-              ['front_default'],
+          image: data['sprites']['other']['official-artwork']['front_default'],
           species: data['species'] as Map<String, dynamic>,
           types: types,
           abilities: abilities,
@@ -76,7 +77,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
 
         pokemonData.add(pokemonInfo);
       } else {
-          throw Exception('Falha ao buscar informações do Pokémon');
+        throw Exception('Falha ao buscar informações do Pokémon');
       }
     });
   }
@@ -99,14 +100,14 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
         final List<Future> resultFutures = [];
         for (var i = 0; i < resultsList.length; i++) {
           var poke = resultsList[i];
-          
-            pokemonList.add(PokemonList(
-              name: poke['name'],
-              url: poke['url'],
-            ));
 
-            final url = poke['url'] as String;
-            resultFutures.add(_fetchPokemonInfo(url));
+          pokemonList.add(PokemonList(
+            name: poke['name'],
+            url: poke['url'],
+          ));
+
+          final url = poke['url'] as String;
+          resultFutures.add(_fetchPokemonInfo(url));
         }
 
         return Future.wait(resultFutures).then((f) {
@@ -129,10 +130,9 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
       initialData: const [],
       future: _fetchPokemonList(),
       builder: (context, snapshot) {
-        if ((snapshot.hasData)  && (snapshot.connectionState == ConnectionState.done) ){
-          List teste = snapshot.data as List;
-          debugPrint("resultado: $teste");
-          // return Text("POKEMONaaaa: " +  teste.toString());
+        if ((snapshot.hasData) &&
+            (snapshot.connectionState == ConnectionState.done)) {
+          List listPokemon = snapshot.data as List;
           var newsListSliver = SliverPadding(
             padding: const EdgeInsets.all(28),
             sliver: SliverGrid(
@@ -142,15 +142,15 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10),
               delegate: SliverChildBuilderDelegate(
-                childCount: teste.length,
+                childCount: listPokemon.length,
                 (BuildContext context, index) {
-                  // debugPrint("Pokemon Data2: $teste");
-                  return PokemonCard(pokemonInfo: teste[index]);
+                  return PokemonCard(pokemonInfo: listPokemon[index]);
                 },
               ),
             ),
           );
           return CustomScrollView(
+            controller: _scrollController,
             slivers: [newsListSliver],
           );
         } else {

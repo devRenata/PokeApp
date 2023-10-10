@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../models/pokemon.dart';
 
+import '../pokemon_details/widgets/details_background.dart';
+
 class PokemonDetailsPage extends StatelessWidget {
   final PokemonInfo pokemonInfo;
   const PokemonDetailsPage({
@@ -10,27 +12,16 @@ class PokemonDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Pokémon detalhes')),
-      body: _buildPokemonDetails(pokemonInfo),
-    );
+    return _buildPokemonDetails(pokemonInfo);
   }
 
   Widget _buildPokemonDetails(PokemonInfo data) {
-    return Column(
-      children: [
-        Hero(
-          tag: '${pokemonInfo.name} image',
-          child: Image.network(
-            data.image!,
-            height: 300,
-            width: 300,
-          ),
-        ),
-        Text('name: ${data.name}'),
-        Text('heigth: ${data.height}'),
-        Text('weigth: ${data.weight}'),
-      ],
+    return Scaffold(
+      body: Stack(
+        children: [
+          DetailsBackground(pokemonInfo: pokemonInfo),
+        ],
+      ),
     );
   }
 }
