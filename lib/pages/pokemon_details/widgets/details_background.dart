@@ -82,19 +82,19 @@ class DetailsBackground extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
     final safeAreaTop = MediaQuery.of(context).padding.top;
 
-    final pokeSize = screenSize.width * .5;
+    final pokeSize = screenSize.width * .6;
     final appBarHeight = AppBar().preferredSize.height;
-    const iconButtonPadding = 5; // MUDAR DEPOIS
+    const iconButtonPadding = 170; // MUDAR DEPOIS
     final iconSize = IconTheme.of(context).size ?? 0;
 
-    final pokeballTopMargin = -(pokeSize / 2 - safeAreaTop - appBarHeight / 2);
-    final pokeballRightMargin = -(pokeSize / 2 - iconButtonPadding - iconSize / 2);
+    final pokeballTopMargin = -(pokeSize / 2 - safeAreaTop - appBarHeight - 230);
+    final pokeballRightMargin = -(pokeSize / 2 - iconButtonPadding - iconSize);
 
     return Positioned(
       top: pokeballTopMargin,
       right: pokeballRightMargin,
       child: IgnorePointer(
-        child: Image.asset(
+        child: Image.asset( 
         'assets/images/pokeball.png',
         width: pokeSize,
         height: pokeSize,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/pokemon.dart';
 
 import '../pokemon_details/widgets/details_background.dart';
+import 'widgets/pokemon_info_card.dart';
 
 class PokemonDetailsPage extends StatelessWidget {
   final PokemonInfo pokemonInfo;
@@ -20,6 +21,7 @@ class PokemonDetailsPage extends StatelessWidget {
       body: Stack(
         children: [
           DetailsBackground(pokemonInfo: pokemonInfo),
+          PokemonInfoCard(pokemonInfo: pokemonInfo),
         ],
       ),
     );

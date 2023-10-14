@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:ui';
-//import 'dart:html';
 import 'package:flutter/material.dart';
-import 'package:pokemonapp/pages/home/widgets/home_background.dart';
 import 'package:pokemonapp/pages/home/widgets/pokemon_card.dart';
 import 'package:pokemonapp/models/pokemon.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +14,7 @@ class PokemonGridPage extends StatefulWidget {
 
 class _PokemonGridPageState extends State<PokemonGridPage> {
   final String baseUrl = "https://pokeapi.co/api/v2/pokemon/";
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   List<PokemonList> pokemonList = [];
   List<PokemonInfo> pokemonData = [];
   bool _isLoading = false;
