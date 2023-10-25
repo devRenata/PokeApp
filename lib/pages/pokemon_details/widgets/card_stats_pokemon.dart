@@ -62,12 +62,12 @@ class CardStatsPokemon extends StatelessWidget {
     );
   }
 
-  Widget _buildStats(List<Map<String, dynamic>> stats) {
+  Widget _buildStats(List<Map<String, dynamic>>? stats) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Stat(label: 'Hp', value: stats[0]['base_stat']),
+        Stat(label: 'Hp', value: stats![0]['base_stat']),
         const SizedBox(height: 14),
         Stat(label: 'Ataque', value: stats[1]['base_stat']),
         const SizedBox(height: 14),

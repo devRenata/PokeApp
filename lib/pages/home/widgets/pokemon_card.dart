@@ -13,60 +13,58 @@ class PokemonCard extends StatelessWidget {
     Key? key,
     required this.pokemonInfo,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
-        final backgroundColor = PokemonTypesX.parse(pokemonInfo.types[0]).color;
+    final backgroundColor = PokemonTypesX.parse(pokemonInfo.types[0]).color;
 
-        return LayoutBuilder(
-          builder: (context, constrains) {
-            final itemHeight = constrains.maxHeight;
-            return Container(
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: backgroundColor.withOpacity(0.4),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+    return LayoutBuilder(
+      builder: (context, constrains) {
+        final itemHeight = constrains.maxHeight;
+        return Container(
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: backgroundColor.withOpacity(0.4),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Material(
-                  color: backgroundColor,
-                  child: InkWell(
-                    splashColor: Colors.white10,
-                    highlightColor: Colors.white10,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PokemonDetailsPage(
-                            pokemonInfo: pokemonInfo,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Stack(
-                      children: [
-                        buildPokeballDecoration(height: itemHeight),
-                        buildPokemonOrder(order: pokemonInfo.id),
-                        buildPokemonImage(
-                            height: itemHeight, pokeInfo: pokemonInfo),
-                        _CardContent(pokemonInfo),
-                      ],
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Material(
+              color: backgroundColor,
+              child: InkWell(
+                splashColor: Colors.white10,
+                highlightColor: Colors.white10,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PokemonDetailsPage(
+                        pokemonInfo: pokemonInfo,
+                      ),
                     ),
-                  ),
+                  );
+                },
+                child: Stack(
+                  children: [
+                    buildPokeballDecoration(height: itemHeight),
+                    buildPokemonOrder(order: pokemonInfo.id),
+                    buildPokemonImage(
+                        height: itemHeight, pokeInfo: pokemonInfo),
+                    _CardContent(pokemonInfo),
+                  ],
                 ),
               ),
-            );
-          },
+            ),
+          ),
         );
-    
-  
+      },
+    );
   }
 }
 

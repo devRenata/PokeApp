@@ -15,9 +15,11 @@ class PokemonGridPage extends StatefulWidget {
 class _PokemonGridPageState extends State<PokemonGridPage> {
   final String baseUrl = "https://pokeapi.co/api/v2/pokemon/";
   final ScrollController _scrollController = ScrollController();
+  List<PokemonList> lista = [];
+  List<PokemonInfo> listaPokemonInfo = [];
   List<PokemonList> pokemonList = [];
   List<PokemonInfo> pokemonData = [];
-  bool _isLoading = false;
+  //final bool _isLoading = false;
   int offset = 0; // número da página
   int limit = 20; // número de pokemons por página, padrão de 20
 
@@ -30,126 +32,106 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
   void initState() {
     super.initState();
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _fetchPokemonList();
-      }
-    });
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.pixels ==
+    //       _scrollController.position.maxScrollExtent) {
+    //     _fetchPokemonList();
+    //   }
+    // });
   }
 
-  Future<void> _fetchPokemonInfo(String url) async {
-    // Informações associadas a cada Pokémon
-    return http.get(Uri.parse(url)).then((response) {
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+  Future<PokemonInfo> _fetchPokemonInfo(String url) async {
+    final response = await http.Client().get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
 
-        final abilities = (data['abilities'] as List<dynamic>)
-            .map((ability) => ability['ability']['name'] as String)
-            .toList();
+      debugPrint("Pokemon Info: ${data['height']}");
 
-        final types = (data['types'] as List<dynamic>)
-            .map((type) => type['type']['name'] as String)
-            .toList();
+      final abilities = (data['abilities'] as List<dynamic>)
+          .map((ability) => ability['ability']['name'] as String)
+          .toList();
 
-        final stats = (data['stats'] as List<dynamic>)
-            .map((stat) => {
-                  'name': stat['stat']['name'],
-                  'base_stat': stat['base_stat'],
-                })
-            .toList();
+      final types = (data['types'] as List<dynamic>)
+          .map((type) => type['type']['name'] as String)
+          .toList();
 
-        final pokemonInfo = PokemonInfo(
-          id: data['id'],
-          name: data['name'],
-          height: data['height'],
-          order: data['order'],
-          weight: data['weight'],
-          image: data['sprites']['other']['official-artwork']['front_default'],
-          species: data['species'] as Map<String, dynamic>,
-          types: types,
-          abilities: abilities,
-          stats: stats,
-        );
+      final stats = (data['stats'] as List<dynamic>)
+          .map((stat) => {
+                'name': stat['stat']['name'],
+                'base_stat': stat['base_stat'],
+              })
+          .toList();
 
-        pokemonData.add(pokemonInfo);
-      } else {
-        throw Exception('Falha ao buscar informações do Pokémon');
-      }
-    });
-  }
+      final pokemonInfo = PokemonInfo(
+        id: data['id'],
+        name: data['name'],
+        height:
+            "data['height'] as String", //verificar por que não está funcionando.
+        order: data['order'],
+        weight: data['width'],
+        image: data['sprites']['other']['official-artwork']['front_default'],
+        species: data['species'] as Map<String, dynamic>,
+        types: types,
+        abilities: abilities,
+        stats: stats,
+      );
 
-  // Buscando os dados da API
-  Future<List<PokemonInfo>> _fetchPokemonList() async {
-    if (_isLoading) {
-      return pokemonData;
+      return pokemonInfo;
+    } else {
+      throw Exception('Falha ao buscar informações do Pokémon');
     }
-    _isLoading = true;
-    // Future.wait(futures);
-    // Lista de todos os Pokémon
-    return http
-        .get(Uri.parse('$baseUrl?offset=$offset&limit=$limit'))
-        .then((responseList) {
-      if (responseList.statusCode == 200) {
-        var data = json.decode(responseList.body);
+  }
 
-        final resultsList = data['results'] as List<dynamic>;
-        final List<Future> resultFutures = [];
-        for (var i = 0; i < resultsList.length; i++) {
-          var poke = resultsList[i];
-
-          pokemonList.add(PokemonList(
-            name: poke['name'],
-            url: poke['url'],
-          ));
-
-          final url = poke['url'] as String;
-          resultFutures.add(_fetchPokemonInfo(url));
-        }
-
-        return Future.wait(resultFutures).then((f) {
-          offset += limit;
-          _isLoading = false;
-          return pokemonData;
-        });
-      } else {
-        print(
-            'Falha na requisição da Lista de Pokémon: ${responseList.statusCode}');
-        _isLoading = false;
-        return pokemonData;
+  Future<List<PokemonInfo>> _fetchPokemonList2() async {
+    final response =
+        await http.Client().get(Uri.parse('$baseUrl?offset=$offset&limit=20'));
+    if (response.statusCode == 200) {
+      var meusDados = json.decode(response.body);
+      List pokemons = meusDados['results'];
+      for (var pokemon in pokemons) {
+        PokemonInfo pokemoninfotemp = await _fetchPokemonInfo(pokemon['url']);
+        listaPokemonInfo.add(pokemoninfotemp);
       }
-    });
+    }
+    return listaPokemonInfo;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       initialData: const [],
-      future: _fetchPokemonList(),
+      future: _fetchPokemonList2(),
       builder: (context, snapshot) {
-        if ((snapshot.hasData) &&
-            (snapshot.connectionState == ConnectionState.done)) {
-          List listPokemon = snapshot.data as List;
-          var newsListSliver = SliverPadding(
-            padding: const EdgeInsets.all(28),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.4,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10),
-              delegate: SliverChildBuilderDelegate(
-                childCount: listPokemon.length,
-                (BuildContext context, index) {
-                  return PokemonCard(pokemonInfo: listPokemon[index]);
-                },
-              ),
-            ),
-          );
-          return CustomScrollView(
-            controller: _scrollController,
-            slivers: [newsListSliver],
-          );
+        debugPrint("Estado da conexão: ${snapshot.connectionState}");
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            debugPrint("Snapshot2:${snapshot.data}");
+            List<PokemonInfo> listPokemon = snapshot.data as List<PokemonInfo>;
+            return CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.all(28),
+                  sliver: SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1.4,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10),
+                    delegate: SliverChildBuilderDelegate(
+                      childCount: listPokemon.length,
+                      (BuildContext context, index) {
+                        return PokemonCard(pokemonInfo: listPokemon[index]);
+                      },
+                    ),
+                  ),
+                )
+              ],
+            );
+          } else {
+            return const Text("deu ruim");
+          }
         } else {
           return const Center(
             child: CircularProgressIndicator(

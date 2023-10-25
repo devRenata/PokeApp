@@ -22,11 +22,11 @@ class CardAboutPokemon extends StatelessWidget {
   }
 
   Widget _buildAbout(
-    Map<String, dynamic> specie,
-    List<String> abilities,
-    double height,
-    double weight,
-    List<String> types,
+    Map<String, dynamic>? specie,
+    List<String>? abilities,
+    String? height,
+    String? weight,
+    List<String>? types,
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

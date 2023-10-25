@@ -87,19 +87,20 @@ class DetailsBackground extends StatelessWidget {
     const iconButtonPadding = 170; // MUDAR DEPOIS
     final iconSize = IconTheme.of(context).size ?? 0;
 
-    final pokeballTopMargin = -(pokeSize / 2 - safeAreaTop - appBarHeight - 230);
+    final pokeballTopMargin =
+        -(pokeSize / 2 - safeAreaTop - appBarHeight - 230);
     final pokeballRightMargin = -(pokeSize / 2 - iconButtonPadding - iconSize);
 
     return Positioned(
       top: pokeballTopMargin,
       right: pokeballRightMargin,
       child: IgnorePointer(
-        child: Image.asset( 
-        'assets/images/pokeball.png',
-        width: pokeSize,
-        height: pokeSize,
-        color: Colors.white24,
-      ),
+        child: Image.asset(
+          'assets/images/pokeball.png',
+          width: pokeSize,
+          height: pokeSize,
+          color: Colors.white24,
+        ),
       ),
     );
   }
