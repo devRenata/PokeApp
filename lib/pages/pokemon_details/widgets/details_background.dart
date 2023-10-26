@@ -1,36 +1,8 @@
-import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/pokemon.dart';
 import '../../../models/pokemon_types.dart';
-
-class _BoxDecoration extends StatelessWidget {
-  static const Size size = Size.square(1440);
-  const _BoxDecoration();
-
-  @override
-  Widget build(BuildContext context) {
-    return Transform.rotate(
-      angle: pi * 5 / 12,
-      alignment: Alignment.center,
-      child: Container(
-        width: size.width,
-        height: size.height,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            begin: const Alignment(-.2, -.2),
-            end: const Alignment(1.5, -.3),
-            colors: [
-              Colors.white.withOpacity(.3),
-              Colors.white.withOpacity(0),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class DetailsBackground extends StatelessWidget {
   const DetailsBackground({super.key, required this.pokemonInfo});
@@ -38,13 +10,22 @@ class DetailsBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        _buildColorBackground(),
-        _buildBoxDecoration(),
-        _buildDottedDecoration(),
-        _buildAppBarPokeballDecoraion(context),
-      ],
+    return LayoutBuilder(
+      builder: (context, constrains) {
+        final itemHeight = constrains.maxHeight;
+        return Stack(
+          children: [
+            _buildColorBackground(),
+            _buildDottedDecoration(),
+            _buildAppBarPokeballDecoraion(context),
+            _buildButtonReturnToHome(context),
+            _buildImagePokemon(itemHeight, context),
+            _buildName(),
+            _buildOrder(),
+            ..._buildTypes(),
+          ],
+        );
+      },
     );
   }
 
@@ -57,39 +38,24 @@ class DetailsBackground extends StatelessWidget {
     );
   }
 
-  Widget _buildBoxDecoration() {
-    return Positioned(
-      top: -_BoxDecoration.size.height * .4,
-      left: -_BoxDecoration.size.width * .4,
-      child: const _BoxDecoration(),
-    );
-  }
-
   Widget _buildDottedDecoration() {
-    const Size size = Size(57, 31);
     return Positioned(
-      top: 4,
-      right: 72,
+      top: 120,
+      right: 10,
       child: Image.asset(
         'assets/images/dotted.png',
-        width: size.width,
-        height: size.height,
+        width: 78,
+        height: 39,
+        color: Colors.white24,
       ),
     );
   }
 
   Widget _buildAppBarPokeballDecoraion(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final safeAreaTop = MediaQuery.of(context).padding.top;
-
-    final pokeSize = screenSize.width * .6;
-    final appBarHeight = AppBar().preferredSize.height;
-    const iconButtonPadding = 170; // MUDAR DEPOIS
-    final iconSize = IconTheme.of(context).size ?? 0;
-
-    final pokeballTopMargin =
-        -(pokeSize / 2 - safeAreaTop - appBarHeight - 230);
-    final pokeballRightMargin = -(pokeSize / 2 - iconButtonPadding - iconSize);
+    final pokeSize = screenSize.width * .7;
+    final pokeballTopMargin = (pokeSize / 2 - 20);
+    final pokeballRightMargin = (screenSize.width - pokeSize) / 2;
 
     return Positioned(
       top: pokeballTopMargin,
@@ -103,5 +69,129 @@ class DetailsBackground extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildButtonReturnToHome(BuildContext context) {
+    return Positioned(
+      top: 15,
+      left: 20,
+      child: IconButton(
+        icon: const Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+          size: 26,
+        ),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
+  Widget _buildImagePokemon(double height, BuildContext context) {
+    final pokemonSize = height * .35;
+    final screenSize = MediaQuery.of(context).size;
+    final pokemonImageRightMargin = (screenSize.width - pokemonSize) / 2;
+    final pokemonTopMargin = (pokemonSize / 2 - 38);
+
+    if (pokemonInfo.image == null) {
+      return const SizedBox();
+    } else {
+      return Positioned(
+        top: pokemonTopMargin,
+        right: pokemonImageRightMargin,
+        child: Hero(
+          tag: '${pokemonInfo.image}',
+          child: AnimatedPadding(
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeOutQuint,
+            padding: EdgeInsets.zero,
+            child: CachedNetworkImage(
+              imageUrl: pokemonInfo.image as String,
+              useOldImageOnUrlChange: true,
+              maxWidthDiskCache: 700,
+              maxHeightDiskCache: 700,
+              fadeInDuration: const Duration(milliseconds: 250),
+              fadeOutDuration: const Duration(milliseconds: 120),
+              imageBuilder: (context, image) => Image(
+                image: image,
+                width: pokemonSize,
+                height: pokemonSize,
+                alignment: Alignment.bottomCenter,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _buildName() {
+    return Positioned(
+      top: 55,
+      left: 30,
+      child: Text(
+        pokemonInfo.name[0].toUpperCase() + pokemonInfo.name.substring(1),
+        style: const TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrder() {
+    final formattedOrder = '#${pokemonInfo.order.toString().padLeft(3, '0')}';
+    return Positioned(
+      top: 60,
+      right: 30,
+      child: Text(
+        formattedOrder,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildTypes() {
+    return [
+      Positioned(
+        top: 100,
+        left: 30,
+        child: Row(
+          children: pokemonInfo.types.take(2).map((type) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: ShapeDecoration(
+                    shape: const StadiumBorder(),
+                    color: const Color(0xFFF5F5F6).withOpacity(.2),
+                  ),
+                  child: Text(
+                    type,
+                    textScaleFactor: 1,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      height: .8,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    ];
   }
 }

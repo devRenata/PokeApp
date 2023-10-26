@@ -94,10 +94,11 @@ class _CardContent extends StatelessWidget {
               child: Text(
                 capitalize(pokemonInfo.name),
                 style: const TextStyle(
-                    fontSize: 16,
-                    height: .7,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                  fontSize: 16,
+                  height: .7,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
             const SizedBox(height: 10),

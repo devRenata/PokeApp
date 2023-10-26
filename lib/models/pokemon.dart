@@ -23,7 +23,7 @@ class PokemonList {
 class PokemonInfo {
   int id;
   String name;
-  String? height;
+  int? height;
   String? weight;
   int? order;
   String? image;

@@ -23,11 +23,6 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
   int offset = 0; // número da página
   int limit = 20; // número de pokemons por página, padrão de 20
 
-  // if dentro do future builder
-  // conectstate.done
-  // adicionar medidas em altura e peso -> dividir por 10
-  // unidades em: altura metro e peso em kg
-
   @override
   void initState() {
     super.initState();
@@ -44,8 +39,6 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
     final response = await http.Client().get(Uri.parse(url));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-
-      debugPrint("Pokemon Info: ${data['height']}");
 
       final abilities = (data['abilities'] as List<dynamic>)
           .map((ability) => ability['ability']['name'] as String)
@@ -66,7 +59,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
         id: data['id'],
         name: data['name'],
         height:
-            "data['height'] as String", //verificar por que não está funcionando.
+            data['height'],
         order: data['order'],
         weight: data['width'],
         image: data['sprites']['other']['official-artwork']['front_default'],
@@ -82,7 +75,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
     }
   }
 
-  Future<List<PokemonInfo>> _fetchPokemonList2() async {
+  Future<List<PokemonInfo>> _fetchPokemonList() async {
     final response =
         await http.Client().get(Uri.parse('$baseUrl?offset=$offset&limit=20'));
     if (response.statusCode == 200) {
@@ -100,7 +93,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       initialData: const [],
-      future: _fetchPokemonList2(),
+      future: _fetchPokemonList(),
       builder: (context, snapshot) {
         debugPrint("Estado da conexão: ${snapshot.connectionState}");
         if (snapshot.connectionState == ConnectionState.done) {
@@ -108,7 +101,7 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
             debugPrint("Snapshot2:${snapshot.data}");
             List<PokemonInfo> listPokemon = snapshot.data as List<PokemonInfo>;
             return CustomScrollView(
-              controller: _scrollController,
+              //controller: _scrollController,
               slivers: [
                 SliverPadding(
                   padding: const EdgeInsets.all(28),
@@ -130,7 +123,12 @@ class _PokemonGridPageState extends State<PokemonGridPage> {
               ],
             );
           } else {
-            return const Text("deu ruim");
+            return const Center(
+              child: Text(
+                'Erro na busca de dados',
+                style: TextStyle(fontSize: 18),
+              ),
+            );
           }
         } else {
           return const Center(

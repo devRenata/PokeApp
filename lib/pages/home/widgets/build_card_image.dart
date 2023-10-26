@@ -10,7 +10,7 @@ Widget buildPokemonImage({required double height, required pokeInfo}) {
       bottom: -1,
       right: 1.5,
       child: Hero(
-        tag: '${pokeInfo.name} image',
+        tag: '${pokeInfo.name}',
         child: AnimatedPadding(
           duration: const Duration(milliseconds: 600),
           curve: Curves.easeOutQuint,
